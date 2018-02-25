@@ -1,25 +1,17 @@
 ---
-title: Introspection
+title: 복원
 layout: ../_core/DocsLayout
 category: Learn
 permalink: /learn/introspection/
 next: /learn/best-practices/
 ---
 
-It's often useful to ask a GraphQL schema for information about what
-queries it supports. GraphQL allows us to do so using the introspection
-system!
+GraphQL 스키마에서 지원하는 쿼리에 대한 정보를 요청하는 것이 유용합니다. GraphQL은 복원 시스템을 사용하여 이를 가능하게 합니다!
 
-For our Star Wars example, the file
-[starWarsIntrospection-test.js](https://github.com/graphql/graphql-js/blob/master/src/__tests__/starWarsIntrospection-test.js)
-contains a number of queries demonstrating the introspection system, and is a
-test file that can be run to exercise the reference implementation's
-introspection system.
 
-We designed the type system, so we know what types are available, but if
-we didn't, we can ask GraphQL, by querying the `__schema` field, always
-available on the root type of a Query. Let's do so now, and ask what types
-are available.
+Star Wars 예제의 경우, [starWarsIntrospection-test.js](https://github.com/graphql/graphql-js/blob/master/src/__tests__/starWarsIntrospection-test.js) 파일에는 복원 시스템을 보여주는 몇가지 쿼리가 포함되어 있으며, 참조 구현의 복원 시스템을 실행할 수 있는 테스트 파일입니다.
+
+타입 시스템이므로 사용할 수있는 타입이 무엇인지 알고있지만, 그렇지 않은 경우에는 Query의 루트 타입에서 항상 사용할 수 있는 `__schema` 필드를 쿼리하여 GraphQL에 요청할 수 있습니다. 지금 바로 사용 가능한 타입을 요청해봅시다.
 
 ```graphql
 # { "graphiql": true }
@@ -30,28 +22,15 @@ are available.
     }
   }
 }
-
-
-
-
-
-
-
 ```
 
-Wow, that's a lot of types! What are they? Let's group them:
+타입이 정말 많네요! 이게 다 뭘까요? 그룹화해봅시다.
 
- - **Query, Character, Human, Episode, Droid** - These are the ones that we
-defined in our type system.
- - **String, Boolean** - These are built-in scalars that the type system
-provided.
- - **\_\_Schema, \_\_Type, \_\_TypeKind, \_\_Field, \_\_InputValue,
-\_\_EnumValue, \_\_Directive** - These all are preceded with a double
-underscore, indicating that they are part of the introspection system.
+ - **Query, Character, Human, Episode, Droid** - 타입 시스템에서 정의한 것들 입니다.
+ - **String, Boolean** - 이것은 타입 시스템이 제공하는 내장 스칼라입니다.
+ - **\_\_Schema, \_\_Type, \_\_TypeKind, \_\_Field, \_\_InputValue, \_\_EnumValue, \_\_Directive** - 모두 앞에는 두 개의 밑줄이 붙어있는데, 이것은 복원 시스템의 일부임을 나타냅니다.
 
-Now, let's try and figure out a good place to start exploring what queries are
-available. When we designed our type system, we specified what type all queries
-would start at; let's ask the introspection system about that!
+이제 어떤 쿼리를 사용할 수 있는지 알아봅시다. 타입 시스템을 설계할 때 모든 타입의 쿼리가 시작될 타입을 지정했습니다. 이를 복원 시스템에 요청해 봅시다!
 
 ```graphql
 # { "graphiql": true }
@@ -64,15 +43,9 @@ would start at; let's ask the introspection system about that!
 }
 ```
 
-And that matches what we said in the type system section, that
-the `Query` type is where we will start! Note that the naming here
-was just by convention; we could have named our `Query` type anything
-else, and it still would have been returned here had we specified it
-was the starting type for queries. Naming it `Query`, though, is a useful
-convention.
+이것은 타입 시스템 섹션에서 배운 것과 일치합니다. `Query` 타입은 시작하는 곳입니다! 여기서 이름은 단지 관습에 따른 것임을 유의하세요. `Query` 타입에 다른 이름을 쓸 수 있었고 쿼리의 시작 타입이라고 지정했다면 여전히 여기에 반환되었을 것입니다. 하지만, `Query` 라는 이름은 일반적인 관습입니다.
 
-It is often useful to examine one specific type. Let's take a look at
-the `Droid` type:
+하나의 특정 타입을 검사하는 것이 유용한 경우가 많습니다. `Droid` 타입을 살펴 보겠습니다.
 
 ```graphql
 # { "graphiql": true }
@@ -83,8 +56,7 @@ the `Droid` type:
 }
 ```
 
-What if we want to know more about Droid, though? For example, is it
-an interface or an object?
+`Droid` 에 대해 더 많이 알고 싶다면 어떻게해야 할까요? 예를 들어, 인터페이스인지 객체인지 알고싶다면?
 
 ```graphql
 # { "graphiql": true }
@@ -96,8 +68,7 @@ an interface or an object?
 }
 ```
 
-`kind` returns a `__TypeKind` enum, one of whose values is `OBJECT`. If
-we asked about `Character` instead we'd find that it is an interface:
+`kind` 는 `__TypeKind` 열거형을 반환했는데, 그 값은 `OBJECT` 입니다. 대신 `Character` 에 대해 요청하면 인터페이스 라는 것을 알 수 있습니다.
 
 ```graphql
 # { "graphiql": true }
@@ -109,8 +80,7 @@ we asked about `Character` instead we'd find that it is an interface:
 }
 ```
 
-It's useful for an object to know what fields are available, so let's
-ask the introspection system about `Droid`:
+어떤 객체가 어떤 필드를 사용할 수 있는지 알고있는 것이 유용하기 때문에, `Droid` 를 복원 시스템에 요청해 봅시다.
 
 ```graphql
 # { "graphiql": true }
@@ -126,22 +96,15 @@ ask the introspection system about `Droid`:
     }
   }
 }
-
-
-
-
 ```
 
-Those are our fields that we defined on `Droid`!
+이것들은 `Droid` 에서 정의한 필드입니다!
 
-`id` looks a bit weird there, it has no name for the type. That's
-because it's a "wrapper" type of kind `NON_NULL`. If we queried for
-`ofType` on that field's type, we would find the `ID` type there,
-telling us that this is a non-null ID.
+`id` 는 약간 이상해 보입니다. 타입에 대한 이름이 없습니다. 종류가 `NON_NULL` 인 `wrapper` 타입이기 때문입니다. 필드의 타입에서 `ofType` 에 대해 쿼리하면, 이 `ID` 가 `non-null` 임을 알리는 `ID` 타입을 반환할 것입니다.
 
-Similarly, both `friends` and `appearsIn` have no name, since they are the
-`LIST` wrapper type. We can query for `ofType` on those types, which will
-tell us what these are lists of.
+비슷하게 `friends` 와 `appearIn` 둘 다 `LIST` `wrapper` 타입이기 때문에 이름이 없습니다. 이 타입에 대해 `ofType` 을 쿼리 할 수 있습니다. 그러면 이 `list` 가 무엇인지를 알 수 있습니다.
+
+Similarly, both `friends` and `appearsIn` have no name, since they are the `LIST` wrapper type. We can query for `ofType` on those types, which will tell us what these are lists of.
 
 ```graphql
 # { "graphiql": true }
@@ -161,15 +124,9 @@ tell us what these are lists of.
     }
   }
 }
-
-
-
-
-
 ```
 
-Let's end with a feature of the introspection system particularly useful
-for tooling; let's ask the system for documentation!
+이제 마지막으로 툴을 만들때에 특히 유용한 복원 시스템의 기능을 봅시다. 시스템에 문서를 요청하세요!
 
 ```graphql
 # { "graphiql": true }
@@ -181,12 +138,6 @@ for tooling; let's ask the system for documentation!
 }
 ```
 
-So we can access the documentation about the type system using introspection,
-and create documentation browsers, or rich IDE experiences.
+이렇게 복원 기능을 사용하여 타입 시스템에 대한 문서에 접근 할 수 있고 문서탐색기나 풍부한 IDE 환경을 만들 수 있습니다.
 
-This has just scratched the surface of the introspection system; we can
-query for enum values, what interfaces a type implements, and more. We
-can even introspect on the introspection system itself. The specification goes
-into more detail about this topic in the "Introspection" section, and the [introspection](https://github.com/graphql/graphql-js/blob/master/src/type/introspection.js)
-file in GraphQL.js contains code implementing a specification-compliant GraphQL
-query introspection system.
+이것은 그저 내성 시스템의 극히 일부입니다. 열거형 값, 타입이 구현하는 인터페이스 등을 쿼리 할 수도 ​​있습니다. 심지어 복원시스템 자체에도 이 시스템을 사용 할 수 있습니다. 이 명세에 대한 자세한 내용은 `introspection` 섹션을 참조하세요. GraphQL.js에 [Introspection](https://github.com/graphql/graphql-js/blob/master/src/type/introspection.js) 파일에는 이 사양을 준수하는 GraphQL 쿼리 복원 시스템을 구현하는 코드가 있습니다.

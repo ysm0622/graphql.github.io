@@ -7,7 +7,7 @@ permalink: /learn/
 next: /learn/queries/
 ---
 
-> 이 문서는 GraphQL의 작동 방식 및 사용법을 다룹니다. GraphQL 서비스를 만드는 방법에 대한 문서를 찾으신다면, GraphQL을 [다양한 언어](/code/)로 구현하는 데 도움이되는 라이브러리를 살펴보세요. 실용적인 튜토리얼을 통한 심도있는 학습을 하시려면 [How to GraphQL] (https://www.howtographql.com) 풀스택 튜토리얼 웹 사이트를 살펴보세요.
+> 이 문서는 GraphQL의 작동 방식 및 사용법을 다룹니다. GraphQL 서비스를 만드는 방법에 대한 문서를 찾으신다면, GraphQL을 [다양한 언어](/code/)로 구현하는 데 도움이되는 라이브러리를 살펴보세요. 실용적인 튜토리얼을 통한 심도있는 학습을 하시려면 [How to GraphQL](https://www.howtographql.com) 풀스택 튜토리얼 웹 사이트를 살펴보세요.
 
 GraphQL은 API를 위한 쿼리 언어이며 데이터를 위해 정의한 타입 시스템을 사용하여 쿼리를 실행하는 서버 사이드 런타임입니다. GraphQL은 특정 데이터베이스 또는 스토리지 엔진과 연결되어 있지 않으며 대신 기존 코드 및 데이터에 의해 뒷받침됩니다.
 

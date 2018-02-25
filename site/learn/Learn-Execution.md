@@ -1,14 +1,14 @@
 ---
-title: Execution
+title: 실행
 layout: ../_core/DocsLayout
 category: Learn
 permalink: /learn/execution/
 next: /learn/introspection/
 ---
 
-After being validated, a GraphQL query is executed by a GraphQL server which returns a result that mirrors the shape of the requested query, typically as JSON.
+유효성을 검사 한 후 GraphQL 쿼리는 GraphQL 서버에 의해 실행되어 요청된 쿼리의 형태를 일반적인 JSON 형태의 결과를 반환합니다.
 
-GraphQL cannot execute a query without a type system, let's use an example type system to illustrate executing a query. This is a part of the same type system used throughout the examples in these articles:
+GraphQL은 타입 시스템없이는 쿼리를 실행할 수 없습니다. 예제를 통해 쿼리 실행에 대하여 설명하겠습니다. 이전 예제에서 사용된 것과 동일한 타입 시스템의 일부입니다.
 
 ```graphql
 type Query {
@@ -32,7 +32,7 @@ type Starship {
 }
 ```
 
-In order to describe what happens when a query is executed, let's use an example to walk through.
+쿼리가 실행될 때 어떤 일이 발생하는지 설명하기 위해 예제를 사용하여 살펴 보겠습니다.
 
 ```graphql
 # { "graphiql": true }
@@ -47,16 +47,15 @@ In order to describe what happens when a query is executed, let's use an example
 }
 ```
 
-You can think of each field in a GraphQL query as a function or method of the previous type which returns the next type. In fact, this is exactly how GraphQL works. Each field on each type is backed by a function called the *resolver* which is provided by the GraphQL server developer. When a field is executed, the corresponding *resolver* is called to produce the next value.
+GraphQL 쿼리의 각 필드는 다음 타입을 반환하는 이전 타입의 함수 또는 메소드로 생각할 수 있습니다. 사실 이것은 GraphQL의 작동 방식입니다. 각 타입의 각 필드는 GraphQL 서버 개발자가 만든 *resolver* 함수에 의해 지원됩니다. 필드가 실행되면 해당 *resolver* 가 호출되어 다음 값을 생성합니다.
 
-If a field produces a scalar value like a string or number, then the execution completes. However if a field produces an object value then the query will contain another selection of fields which apply to that object. This continues until scalar values are reached. GraphQL queries always end at scalar values.
-
+필드가 문자열이나 숫자와 같은 스칼라 값을 생성하면 실행이 완료됩니다. 그러나 필드가 객체를 생성하면 쿼리는 해당 객체에 적용되는 다른 필드 선택 항목을 포함하게됩니다. 이 스칼라 값에 도달할 때까지 반복됩니다. GraphQL 쿼리는 항상 스칼라 값으로 끝납니다.
 
 ## Root fields & resolvers
 
-At the top level of every GraphQL server is a type that represents all of the possible entry points into the GraphQL API, it's often called the *Root* type or the *Query* type.
+모든 GraphQL 서버의 최상위 레벨은 GraphQL API에 가능한 모든 진입점을 나타내는 타입으로, *Root* 타입 또는 *Query* 타입이라고도 합니다.
 
-In this example, our Query type provides a field called `human` which accepts the argument `id`. The resolver function for this field likely accesses a database and then constructs and returns a `Human` object.
+이 예제에서 Query 타입은 인자 `id` 를 받아들이는 `human` 필드를 제공합니다. 이 필드의 *resolver* 함수는 데이터베이스에 액세스 한 다음 `Human` 객체를 생성하고 반환합니다.
 
 ```js
 Query: {
@@ -68,16 +67,16 @@ Query: {
 }
 ```
 
-This example is written in JavaScript, however GraphQL servers can be built in [many different languages](/code/). A resolver function receives three arguments:
+이 예제는 자바스크립트로 작성되었지만 GraphQL 서버는 [다양한 언어](/code/)로 만들 수 있습니다. *resolver* 함수는 세 개의 인수를 받습니다.
 
-- `obj` The previous object, which for a field on the root Query type is often not used.
-- `args` The arguments provided to the field in the GraphQL query.
-- `context` A value which is provided to every resolver and holds important contextual information like the currently logged in user, or access to a database.
+- `obj`: 루트 쿼리 타입의 필드에 대해 종종 사용되지 않는 이전 객체.
+- `args`: GraphQL 쿼리의 필드에 제공된 인수입니다.
+- `context`: 모든 *resolver* 함수에 제공되고 현재 로그인한 사용자 또는 데이터베이스에 대한 액세스와 같은 중요한 문맥 정보를 보유하는 값.
 
 
 ## Asynchronous resolvers
 
-Let's take a closer look at what's happening in this resolver function.
+이 *resolver* 함수에서 어떤 일이 일어나는지 자세히 살펴보겠습니다.
 
 ```js
 human(obj, args, context) {
@@ -87,14 +86,14 @@ human(obj, args, context) {
 }
 ```
 
-The `context` is used to provide access to a database which is used to load the data for a user by the `id` provided as an argument in the GraphQL query. Since loading from a database is an asynchronous operation, this returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). In JavaScript, Promises are used to work with asynchronous values, but the same concept exists in many languages, often called *Futures*, *Tasks* or *Deferred*. When the database returns, we can construct and return a new `Human` object.
+`context` 는 GraphQL 쿼리에서 인자로 제공된 `id` 에 의해 사용자의 데이터를 로드하는데 사용되는 데이터베이스에 대한 액세스를 위해 사용됩니다. 데이터베이스에서 로딩은 비동기 작업이기 때문에 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)를 반환합니다. JavaScript에서는 ` Promise` 를 사용하여 비동기 값을 처리하지만 동일한 개념이 *Futures* , *Tasks* , *Deferred* 등 여러가지 언어로 존재합니다. 데이터베이스가 반환되면 새로운 `Human` 객체를 생성하고 반환할 수 있습니다.
 
-Notice that while the resolver function needs to be aware of Promises, the GraphQL query does not. It simply expects the `human` field to return something which it can then ask the `name` of. During execution, GraphQL will wait for Promises, Futures, and Tasks to complete before continuing and will do so with optimal concurrency.
+*resolver* 함수는 `Promise` 를 인식해야하지만 GraphQL 쿼리는 Promise를 인식 할 필요가 없습니다. `human` 필드는 `name` 을 요청할 수 있는 무언가를 반환 할 것입니다. 실행 중에 GraphQL은 `Promises`, `Futures`, `Tasks` 가 완료되기 전에 완료될 때까지 기다렸다가 효율적으로 동시에 처리합니다.
 
 
 ## Trivial resolvers
 
-Now that a `Human` object is available, GraphQL execution can continue with the fields requested on it.
+이제 `Human` 객체를 사용할 수 있게 되었으므로 GraphQL 실행은 요청된 필드를 계속 사용할 수 있습니다.
 
 ```js
 Human: {
@@ -104,16 +103,15 @@ Human: {
 }
 ```
 
-A GraphQL server is powered by a type system which is used to determine what to do next. Even before the `human` field returns anything, GraphQL knows that the next step will be to resolve fields on the `Human` type since the type system tells it that the `human` field will return a `Human`.
+GraphQL 서버는 다음에 수행할 작업을 결정하는 타입 시스템에 의해 작동됩니다. `human` 필드가 무언가를 반환하기 전에, GraphQL은 타입 시스템이 `human` 필드가 `Human` 을 반환 할 것이라고 알려주기 때문에 다음 단계는 `Human` 타입의 필드를 반환할 것이라는 것을 알고 있습니다.
 
-Resolving the name in this case is very straight-forward. The name resolver function is called and the `obj` argument is the `new Human` object returned from the previous field. In this case, we expect that Human object to have a `name` property which we can read and return directly.
+이 경우 `name` 을 해석하는 것은 매우 간단합니다. `name` *resolver* 함수가 호출되고 `obj` 인수는 이전 필드에서 반환 된 `new Human` 객체입니다. `Human` 객체는 직접 읽고 반환 할 수 있는 `name` 속성을 가질 것을 알 수 있습니다.
 
-In fact, many GraphQL libraries will let you omit resolvers this simple and will just assume that if a resolver isn't provided for a field, that a property of the same name should be read and returned.
-
+사실, 많은 GraphQL 라이브러리는 *resolver* 를 생략할 수 있게 해주며, *resolver* 가 필드에 제공되지 않으면 같은 이름의 속성을 읽고 반환해야 한다고 가정됩니다.
 
 ## Scalar coercion
 
-While the `name` field is being resolved, the `appearsIn` and `starships` fields can be resolved concurrently. The `appearsIn` field could also have a trivial resolver, but let's take a closer look:
+`name` 필드가 *resolve* 되는 동안 `appearIn` 과 `starships` 필드는 동시에 *resolve* 될 수 있습니다. `appearIn` 필드는 간단한 *resolver* 를 가질 수도 있지만 좀 더 자세히 살펴보도록 하겠습니다.
 
 ```js
 Human: {
@@ -123,14 +121,13 @@ Human: {
 }
 ```
 
-Notice that our type system claims `appearsIn` will return Enum values with known values, however this function is returning numbers! Indeed if we look up at the result we'll see that the appropriate Enum values are being returned. What's going on?
+타입 시스템이 `appearIn` 이 알고있는 Enum 값을 반환한다고 알려주지만 이 함수는 숫자를 반환합니다! 실제로 결과를 살펴보면 적절한 Enum 값이 반환되는 것을 볼 수 있습니다. 어떻게된 일일까요?
 
-This is an example of scalar coercion. The type system knows what to expect and will convert the values returned by a resolver function into something that upholds the API contract. In this case, there may be an Enum defined on our server which uses numbers like `4`, `5`, and `6` internally, but represents them as Enum values in the GraphQL type system.
-
+이것은 스칼라 강제의 예입니다. 타입 시스템은 어떤 값이 올지 알고 있어서 *resolver* 함수에 의해 리턴된 값을 API 규약을 유지할 수 있는 형태로 변환 할 것입니다. 이 경우 내부적으로 `4`,`5`,`6` 과 같은 숫자를 사용하는 Enum 이 서버에 정의되어 있을 수 있지만 GraphQL 타입 시스템에서는 이를 Enum 값으로 나타냅니다.
 
 ## List resolvers
 
-We've already seen a bit of what happens when a field returns a list of things with the `appearsIn` field above. It returned a *list* of enum values, and since that's what the type system expected, each item in the list was coerced to the appropriate enum value. What happens when the `starships` field is resolved?
+필드가 위의 `appearIn` 필드 리스트를 반환 할 때 어떤 일이 벌어지는지 살펴 보았습니다. 이것은 열거형 값의 *list* 를 반환했으며, 이 때문에 타입 시스템에서 예상한대로 리스트의 각 항목이 적절한 열거형 값으로 강제 변환되었습니다. `starships` 필드가 *resolve* 되면 어떻게 될까요?
 
 ```js
 Human: {
@@ -144,16 +141,15 @@ Human: {
 }
 ```
 
-The resolver for this field is not just returning a Promise, it's returning a *list* of Promises. The `Human` object had a list of ids of the `Starships` they piloted, but we need to go load all of those ids to get real Starship objects.
+이 필드의 *resolver* 는 `Promise` 를 반환하는 것이 아니라 `Promise`의 *list* 을 반환합니다. `Human` 객체는 이것이 처리한 `Starships` 의 id list 를 가지고 있지만, 실제 `Starship` 객체를 얻으려면 모든 id를 로드해야 합니다.
 
-GraphQL will wait for all of these Promises concurrently before continuing, and when left with a list of objects, it will concurrently continue yet again to load the `name` field on each of these items.
-
+GraphQL 은 계속하기 전에 이 모든 `Promise` 들을 기다릴 것이고, 객체의 리스트와 함께 남겨질 때 동시에 이 아이템들의 각각에 `name` 필드를 다시 로드 할 것입니다.
 
 ## Producing the result
 
-As each field is resolved, the resulting value is placed into a key-value map with the field name (or alias) as the key and the resolved value as the value, this continues from the bottom leaf fields of the query all the way back up to the original field on the root Query type. Collectively these produce a structure that mirrors the original query which can then be sent (typically as JSON) to the client which requested it.
+각 필드가 *resolve* 될 때 결과 값은 필드 이름(또는 별칭)을 키로 사용하고 *resolve*된 값을 값으로 사용하여 `key`-`value` 맵에 들어갑니다. 이 방법은 쿼리의 맨 하단 끝 필드에서부터 루트 쿼리 타입의 초기 필드까지 반복됩니다. 최종적으로 기존 쿼리를 미러링하는 구조를 만들어서 요청한 클라이언트에 (일반적으로 JSON으로) 보낼 수 있습니다.
 
-Let's take one last look at the original query to see how all these resolving functions produce a result:
+원래의 쿼리를 마지막으로 살펴보고 이러한 모든 *revoler* 함수가 결과를 어떻게 생성하는지 살펴 보겠습니다.
 
 ```graphql
 # { "graphiql": true }

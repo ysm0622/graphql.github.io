@@ -1,24 +1,16 @@
 ---
-title: Validation
+title: 검사
 layout: ../_core/DocsLayout
 category: Learn
 permalink: /learn/validation/
 next: /learn/execution/
 ---
 
-By using the type system, it can be predetermined whether a GraphQL query
-is valid or not. This allows servers and clients to effectively inform
-developers when an invalid query has been created, without having to rely
-on runtime checks.
+타입 시스템을 사용하면 GraphQL 쿼리가 유효한지 여부를 미리 알 수 있습니다. 이를 통해 런타임 검사에 의존하지 않고도 유효하지 않은 쿼리가 생성되었을 때 서버와 클라이언트가 효과적으로 개발자에게 알릴 수 있습니다.
 
-For our Star Wars example, the file
-[starWarsValidation-test.js](https://github.com/graphql/graphql-js/blob/master/src/__tests__/starWarsValidation-test.js)
-contains a number of queries demonstrating various invalidities, and is a test
-file that can be run to exercise the reference implementation's validator.
+Star Wars 예제에서 [starWarsValidation-test.js](https://github.com/graphql/graphql-js/blob/master/src/__tests__/starWarsValidation-test.js) 파일에는 여러가지 유효하지 않음을 입증하는 많은 쿼리가 들어있으며, 참조 구현의 검사기를 실행할 수있는 테스트 파일입니다.
 
-To start, let's take a complex valid query. This is a nested query, similar to
-an example from the previous section, but with the duplicated fields factored
-out into a fragment:
+먼저 복잡한 쿼리를 작성해 보겠습니다. 이전 섹션의 예제와 비슷하지만 이것은 중복된 필드를 묶은 프래그먼트로된 중첩 쿼리입니다.
 
 ```graphql
 # { "graphiql": true }
@@ -40,11 +32,9 @@ fragment NameAndAppearances on Character {
 }
 ```
 
-And this query is valid. Let's take a look at some invalid queries...
+이 쿼리는 유효합니다. 잘못된 쿼리 몇 가지를 살펴 보겠습니다.
 
-A fragment cannot refer to itself or create a cycle, as this could result in
-an unbounded result! Here's the same query above but without the explicit three
-levels of nesting:
+프래그먼트가 무한한 결과를 초래할 수 있으므로 프래그먼트가 자신을 참조하거나 싸이클을 만들 수 없습니다! 아래는 명시적인 세단계의 중첩이 없지만 위와 동일한 쿼리입니다.
 
 ```graphql
 # { "graphiql": true }
@@ -63,10 +53,7 @@ fragment NameAndAppearancesAndFriends on Character {
 }
 ```
 
-When we query for fields, we have to query for a field that exists on the
-given type. So as `hero` returns a `Character`, we have to query for a field
-on `Character`. That type does not have a `favoriteSpaceship` field, so this
-query is invalid:
+필드를 쿼리 할 때 주어진 타입에 존재하는 필드를 쿼리해야합니다. `hero` 는 `Character` 를 반환합니다. 그렇기 때문에 `Character` 필드를 쿼리해야합니다. 아래 타입은 `favoriteSpaceship` 필드를 가지고 있지 않으므로 이 쿼리는 유효하지 않습니다.
 
 ```graphql
 # { "graphiql": true }
@@ -78,10 +65,7 @@ query is invalid:
 }
 ```
 
-Whenever we query for a field and it returns something other than a scalar
-or an enum, we need to specify what data we want to get back from the field.
-Hero returns a `Character`, and we've been requesting fields like `name` and
-`appearsIn` on it; if we omit that, the query will not be valid:
+필드를 쿼리 할 때마다 스칼라나 열거형이 아닌 다른 것을 반환한다면 필드에서 어떤 데이터를 얻고자 하는지를 명확히 해야합니다. `Hero` 는 `Character`를 반환하고, `name` 과 `appearIn` 과 같은 필드를 요청했었습니다. 이를 생략하면 쿼리가 유효하지 않습니다.
 
 ```graphql
 # { "graphiql": true }
@@ -91,8 +75,7 @@ Hero returns a `Character`, and we've been requesting fields like `name` and
 }
 ```
 
-Similarly, if a field is a scalar, it doesn't make sense to query for
-additional fields on it, and doing so will make the query invalid:
+마찬가지로 필드가 스칼라인 경우에는 추가 필드를 쿼리하는 것은 의미가 없으므로 쿼리가 유효하지 않게됩니다.
 
 ```graphql
 # { "graphiql": true }
@@ -106,10 +89,7 @@ additional fields on it, and doing so will make the query invalid:
 }
 ```
 
-Earlier, it was noted that a query can only query for fields on the type
-in question; when we query for `hero` which returns a `Character`, we
-can only query for fields that exist on `Character`. What happens if we
-want to query for R2-D2s primary function, though?
+쿼리는 해당 타입의 필드만 쿼리 할 수 ​​있다는 점을 배웠습니다. `Character` 를 반환하는 `hero` 를 쿼리 할 때 `Character` 에 있는 필드 만 쿼리 할 수 ​​있습니다. 만약 `R2-D2`의 `primaryFunction` 을 쿼리하고자 한다면 어떤일이 일어날까요?
 
 ```graphql
 # { "graphiql": true }
@@ -122,12 +102,7 @@ want to query for R2-D2s primary function, though?
 }
 ```
 
-That query is invalid, because `primaryFunction` is not a field on `Character`.
-We want some way of indicating that we wish to fetch `primaryFunction` if the
-`Character` is a `Droid`, and to ignore that field otherwise. We can use
-the fragments we introduced earlier to do this. By setting up a fragment defined
-on `Droid` and including it, we ensure that we only query for `primaryFunction`
-where it is defined.
+`primaryFunction` 가 `Character` 의 필드가 아니기 때문에 이 쿼리는 유효하지 않습니다. `Character` 가 `Droid` 인 경우에만 `primaryFunction` 을 가져오고 그 외엔 그 필드를 무시하는 방법이 있어야합니다. 이전에 소개한 프래그먼트을 사용하여 이를 수행 할 수 있습니다. `Droid` 에 정의된 프래그먼트를 설정하고 이를 포함하여, 정의된 곳에서 `primaryFunction` 만 쿼리합니다.
 
 ```graphql
 # { "graphiql": true }
@@ -143,11 +118,8 @@ fragment DroidFields on Droid {
 }
 ```
 
-This query is valid, but it's a bit verbose; named fragments were valuable
-above when we used them multiple times, but we're only using this one once.
-Instead of using a named fragment, we can use an inline fragment; this
-still allows us to indicate the type we are querying on, but without naming
-a separate fragment:
+이 쿼리는 유효하지만 약간 과하다고 생각될 수 있습니다. 이름이 있는 프래그먼트는 재사용할 때 가치가 있지만 여기서는 이 단 한 번만 사용했습니다. 이름이 있는 프래그먼트를 사용하는 대신 인라인 프래그먼트을 사용할 수 있습니다. 이는 여전히 ​​별도의 프래그먼트를 분리하지 않고 쿼리하는 타입을 표현할 수 있도록 합니다.
+
 
 ```graphql
 # { "graphiql": true }
@@ -161,10 +133,4 @@ a separate fragment:
 }
 ```
 
-This has just scratched the surface of the validation system; there
-are a number of validation rules in place to ensure that a GraphQL query
-is semantically meaningful. The specification goes into more detail about this
-topic in the "Validation" section, and the
-[validation](https://github.com/graphql/graphql-js/blob/master/src/validation)
-directory in GraphQL.js contains code implementing a
-specification-compliant GraphQL validator.
+이것은 그저 검증 시스템의 일부입니다. GraphQL 쿼리는 의미가 있음을 보장하기 위한 여러 가지 유효성 검사 규칙이 있습니다. 이 명세는 "Validation" 섹션에서 이 항목에 대해 자세히 설명하고 GraphQL.js의 [검사](https://github.com/graphql/graphql-js/blob/master/src/validation) 디렉토리에는 사양을 준수하는 GraphQL 검사기 구현 코드가 포함되어 있습니다.

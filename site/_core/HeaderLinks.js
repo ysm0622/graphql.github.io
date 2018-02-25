@@ -9,11 +9,11 @@
 var React = require('react');
 
 const links = [
-  { section: 'learn', text: 'Learn', href: '/learn/' },
-  { section: 'code', text: 'Code', href: '/code/' },
-  { section: 'community', text: 'Community', href: '/community/' },
-  { section: 'blog', text: 'Blog', href: '/blog/' },
-  { section: 'spec', text: 'Spec', href: 'http://facebook.github.io/graphql/' },
+  { section: 'learn', text: '배우기', href: '/learn/' },
+  { section: 'code', text: '코드', href: '/code/' },
+  { section: 'community', text: '커뮤니티', href: '/community/' },
+  { section: 'blog', text: '블로그', href: '/blog/' },
+  { section: 'spec', text: '명세', href: 'http://facebook.github.io/graphql/' },
 ];
 
 export default ({ section }) =>

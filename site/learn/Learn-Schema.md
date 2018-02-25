@@ -1,5 +1,5 @@
 ---
-title: Schemas and Types
+title: 스키마 & 타입
 layout: ../_core/DocsLayout
 category: Learn
 permalink: /learn/schema/
@@ -7,9 +7,11 @@ next: /learn/validation/
 sublinks: Type System,Type Language,Object Types and Fields,Arguments,The Query and Mutation Types,Scalar Types,Enumeration Types,Lists and Non-Null,Interfaces,Union Types,Input Types
 ---
 
-On this page, you'll learn all you need to know about the GraphQL type system and how it describes what data can be queried. Since GraphQL can be used with any backend framework or programming language, we'll stay away from implementation-specific details and talk only about the concepts.
+이 페이지에서는 GraphQL 타입 시스템에 대해 알아야 할 사항과 쿼리 할 수 있는 데이터를 표현하는 방법을 배우게됩니다. GraphQL은 모든 백엔드 프레임워크 또는 프로그래밍 언어와 함께 사용할 수 있기 때문에 구현과 관련된 세부 정보에서 벗어나 개념에 대해서만 이야기 할 것입니다.
 
 ### Type system
+
+이전에 GraphQL 쿼리를 본 적이 있다면 GraphQL 쿼리 언어가 기본적으로 객체의 필드를 선택하는 것임을 알 수 있습니다. 다음 쿼리 예제를 보세요.
 
 If you've seen a GraphQL query before, you know that the GraphQL query language is basically about selecting fields on objects. So, for example, in the following query:
 
@@ -23,21 +25,21 @@ If you've seen a GraphQL query before, you know that the GraphQL query language 
 }
 ```
 
-1. We start with a special "root" object
-2. We select the `hero` field on that
-3. For the object returned by `hero`, we select the `name` and `appearsIn` fields
+1. 특별한 `root` 객체로 시작합니다.
+2. `hero` 필드를 선택합니다.
+3. `hero` 에 의해 반환 된 객체에 대해 `name` 과 `appearIn` 필드를 선택합니다
 
-Because the shape of a GraphQL query closely matches the result, you can predict what the query will return without knowing that much about the server. But it's useful to have an exact description of the data we can ask for - what fields can we select? What kinds of objects might they return? What fields are available on those sub-objects? That's where the schema comes in.
+GraphQL 쿼리의 형태가 결과와 거의 일치하기 때문에 서버에 대해 모르는 상태에서 쿼리가 반환 할 내용을 예측할 수 있습니다. 하지만 서버에 요청할 수 있는 데이터에 대한 정확한 표현을 갖는 것이 유용합니다. 어떤 필드를 선택할 수 있는지, 어떤 종류의 객체를 반환 할 수 있는지, 해당 하위 객체에서 사용할 수 있는 필드는 무엇인지, 이것이 바로 스키마가 필요한 이유입니다.
 
-Every GraphQL service defines a set of types which completely describe the set of possible data you can query on that service. Then, when queries come in, they are validated and executed against that schema.
+모든 GraphQL 서비스는 해당 서비스에서 쿼리 가능한 데이터 집합을 완벽히 설명하는 타입들을 정의합니다. 그런 다음 쿼리가 들어 오면 해당 스키마에 대해 유효성이 검사되고 실행됩니다.
 
 ### Type language
 
-GraphQL services can be written in any language. Since we can't rely on a specific programming language syntax, like JavaScript, to talk about GraphQL schemas, we'll define our own simple language. We'll use the "GraphQL schema language" - it's similar to the query language, and allows us to talk about GraphQL schemas in a language-agnostic way.
+GraphQL 서비스는 어떤 언어로든 작성할 수 있습니다. GraphQL 스키마에 대해 말하기 전에 JavaScript와 같은 특정 프로그래밍 언어 구문에 의존 할 수 없기 때문에 간단한 언어를 정의 할 것입니다. 여기서는 `GraphQL 스키마 언어` 를 사용할 것입니다 - 이것은 쿼리 언어와 비슷하며 GraphQL 스키마를 언어에 구애받지 않는 방식으로 표현 할 수 있게 해줍니다.
 
 ### Object types and fields
 
-The most basic components of a GraphQL schema are object types, which just represent a kind of object you can fetch from your service, and what fields it has. In the GraphQL schema language, we might represent it like this:
+GraphQL 스키마의 가장 기본적인 구성 요소는 객체 타입입니다. 객체 타입은 서비스에서 가져올 수 있는 객체의 종류와 그 객체의 필드를 나타냅니다. GraphQL 스키마 언어에서는 다음과 같이 표현 할 수 있습니다.
 
 ```graphql
 type Character {
@@ -46,19 +48,19 @@ type Character {
 }
 ```
 
-The language is pretty readable, but let's go over it so that we can have a shared vocabulary:
+이 언어는 꽤 읽을 만하지만, 서로 이해할 수 있도록 이 언어를 살펴 보겠습니다.
 
-- `Character` is a _GraphQL Object Type_, meaning it's a type with some fields. Most of the types in your schema will be object types.
-- `name` and `appearsIn` are _fields_ on the `Character` type. That means that `name` and `appearsIn` are the only fields that can appear in any part of a GraphQL query that operates on the `Character` type.
-- `String` is one of the built-in _scalar_ types - these are types that resolve to a single scalar object, and can't have sub-selections in the query. We'll go over scalar types more later.
-- `String!` means that the field is _non-nullable_, meaning that the GraphQL service promises to always give you a value when you query this field. In the type language, we'll represent those with an exclamation mark.
-- `[Episode]!` represents an _array_ of `Episode` objects. Since it is also _non-nullable_, you can always expect an array (with zero or more items) when you query the `appearsIn` field.
+- `Character` 는 *GraphQL 객체 타입*입니다. 즉, 일부 필드가 있는 유형입니다. 스키마의 대부분의 타입은 객체 타입입니다.
+- `name` 과 `appearIn` 은 `Character` 타입의 *필드*입니다. 즉 `name` 과 `appearIn` 은 `Character` 타입으로 작동하는 GraphQL 쿼리의 어느 부분에도 나타날 수 있는 유일한 필드입니다.
+- `String` 은 내장 된 *스칼라* 타입 중 하나입니다. 이것은 단일 스칼라 객체로 해석되는 타입이며 쿼리에서 하위 선택을 가질 수 없습니다. 스칼라 타입은 나중에 자세히 다룰 것입니다.
+- `String!` 은 필드가 *non-nullable*임을 의미합니다. 즉, 이 필드를 쿼리 할 때 GraphQL 서비스가 항상 값을 제공한다는 것을 의미합니다. 타입 언어에서는 이것을 느낌표로 나타냅니다.
+- `[Episode]!` 는 `Episode` 객체의 *array* 를 나타냅니다. 또한 *non-nullable* 이기 때문에 `appearIn` 필드를 쿼리할 때 항상(0개 이상의 아이템을 가진) 배열을 기대할 수 있습니다.
 
-Now you know what a GraphQL object type looks like, and how to read the basics of the GraphQL type language.
+이제 GraphQL 객체 타입이 무엇인지 배웠으며 GraphQL 타입 언어의 기본적인 것을 읽을 수 있습니다.
 
 ### Arguments
 
-Every field on a GraphQL object type can have zero or more arguments, for example the `length` field below:
+GraphQL 객체 타입의 모든 필드는 0개 이상의 인수를 가질 수 있습니다(예: 아래 `length` 필드).
 
 ```graphql
 type Starship {
@@ -68,13 +70,13 @@ type Starship {
 }
 ```
 
-All arguments are named. Unlike languages like JavaScript and Python where functions take a list of ordered arguments, all arguments in GraphQL are passed by name specifically. In this case, the `length` field has one defined argument, `unit`.
+모든 인수에는 이름이 있습니다. 함수가 정렬된 인수 목록을 가져오는 JavaScript 및 Python과 같은 언어와 달리 GraphQL의 모든 인수는 특별한 이름으로 전달됩니다. 이 경우, `length` 필드는 하나의 정의 된 인수 `unit` 을 가집니다.
 
-Arguments can be either required or optional. When an argument is optional, we can define a _default value_ - if the `unit` argument is not passed, it will be set to `METER` by default.
+인수는 필수 또는 선택적일 수 있습니다. 인수가 선택적인 경우 *기본값* 을 정의 할 수 있습니다. -  `unit` 인수가 전달되지 않으면 기본적으로 `METER` 로 설정됩니다.
 
 ### The Query and Mutation types
 
-Most types in your schema will just be normal object types, but there are two types that are special within a schema:
+스키마의 대부분의 타입은 일반 객체 유형일 뿐이지만 스키마 내에서는 특수한 두 가지 타입이 있습니다.
 
 ```graphql
 schema {
@@ -83,7 +85,7 @@ schema {
 }
 ```
 
-Every GraphQL service has a `query` type and may or may not have a `mutation` type. These types are the same as a regular object type, but they are special because they define the _entry point_ of every GraphQL query. So if you see a query that looks like:
+모든 GraphQL 서비스는 `query` 타입을 가지며 `mutation` 타입은 가질 수도 있고 가지지 않을 수도 있습니다. 이러한 타입은 일반 객체 타입과 동일하지만 모든 GraphQL 쿼리의 *진입점* 을 정의하므로 특별합니다. 따라서 다음과 같은 쿼리를 볼 수 있습니다.
 
 ```graphql
 # { "graphiql": true }
@@ -97,7 +99,7 @@ query {
 }
 ```
 
-That means that the GraphQL service needs to have a `Query` type with `hero` and `droid` fields:
+즉, GraphQL 서비스는 `hero` 및 `droid` 필드가 있는 `Query` 타입이 필요합니다.
 
 ```graphql
 type Query {
@@ -106,15 +108,16 @@ type Query {
 }
 ```
 
-Mutations work in a similar way - you define fields on the `Mutation` type, and those are available as the root mutation fields you can call in your query.
+뮤테이션은 비슷한 방식으로 작동합니다. 즉, `Mutation` 타입의 필드를 정의하면 쿼리에서 호출 할 수있는 루트 뮤테이션 필드로 사용할 수 있습니다.
 
-It's important to remember that other than the special status of being the "entry point" into the schema, the `Query` and `Mutation` types are the same as any other GraphQL object type, and their fields work exactly the same way.
+스키마에 대한 `진입점` 이라는 특수한 상태 이외의 다른 쿼리 타입과 뮤테이션 타입은 다른 GraphQL 객체 타입과 동일하며 해당 필드는 정확히 동일한 방식으로 작동한다는 점을 기억해야합니다.
 
 ### Scalar types
 
-A GraphQL object type has a name and fields, but at some point those fields have to resolve to some concrete data. That's where the scalar types come in: they represent the leaves of the query.
+GraphQL 객체 타입은 이름과 필드를 가지고 있지만, 어느 시점에서 이 필드는 일부 구체적인 데이터로 해석되어야합니다. 이것이 스칼라 타입이 필요한 이유입니다. 즉, 쿼리의 끝을 나타냅니다.
 
-In the following query, the `name` and `appearsIn` will resolve to scalar types:
+다음 쿼리에서 `name` 과 `appearIn` 은 스칼라 타입으로 해석될 것입니다.
+
 
 ```graphql
 # { "graphiql": true }
@@ -126,32 +129,32 @@ In the following query, the `name` and `appearsIn` will resolve to scalar types:
 }
 ```
 
-We know this because those fields don't have any sub-fields - they are the leaves of the query.
+필드에 하위 필드가 없기 때문에 이 사실을 알 수 있습니다. 이 필드는 쿼리의 끝부분입니다.
 
-GraphQL comes with a set of default scalar types out of the box:
+GraphQL에는 기본 스칼라 타입들이 기본 제공됩니다.
 
-- `Int`: A signed 32‐bit integer.
-- `Float`: A signed double-precision floating-point value.
-- `String`: A UTF‐8 character sequence.
-- `Boolean`: `true` or `false`.
-- `ID`: The ID scalar type represents a unique identifier, often used to refetch an object or as the key for a cache. The ID type is serialized in the same way as a String; however, defining it as an `ID` signifies that it is not intended to be human‐readable.
+- `Int`: 부호가 있는 32비트 정수.
+- `Float`: 부호가 있는 부동소수점 값.
+- `String`: UTF-8 문자열.
+- `Boolean`: `true` 또는 `false`.
+- `ID`: ID 스칼라 타입은 객체를 다시 요청하거나 캐시의 키로써 자주 사용되는 고유 식별자를 나타냅니다. ID 타입은 String 과 같은 방법으로 직렬화됩니다. 하지만 `ID` 로 정의하는 것은 사람이 읽을 수 있도록 하는 의도가 아니라는 것을 의미합니다.
 
-In most GraphQL service implementations, there is also a way to specify custom scalar types. For example, we could define a `Date` type:
+대부분의 GraphQL 서비스 구현에는 맞춤 스칼라 타입을 지정하는 방법이 있습니다. 예를 들면 `Date` 타입을 정의 할 수 있습니다.
 
 ```graphql
 scalar Date
 ```
 
-Then it's up to our implementation to define how that type should be serialized, deserialized, and validated. For example, you could specify that the `Date` type should always be serialized into an integer timestamp, and your client should know to expect that format for any date fields.
+해당 타입을 직렬화, 역 직렬화 및 유효성 검사를 수행하는 방법을 정의하는 것을 구현할 수 있습니다. 예를 들어, `Date` 타입을 항상 정수형 타임스탬프로 직렬화해야 한다는 것을 지정할 수 있습니다. 그리고 클라이언트는 모든 날짜 필드에 대해 그 타입을 기대해야 합니다.
 
 ### Enumeration types
 
-Also called _Enums_, enumeration types are a special kind of scalar that is restricted to a particular set of allowed values. This allows you to:
+*Enums* 라고도 하는 열거 타입은 허용되는 특정 값들로 제한되는 특별한 종류의 스칼라입니다. 이를 통해 다음을 수행할 수 있습니다.
 
-1. Validate that any arguments of this type are one of the allowed values
-2. Communicate through the type system that a field will always be one of a finite set of values
+1. 이 타입의 인수가 허용된 값 중 하나임을 검증합니다.
+2. 필드가 항상 값의 유한 집합 중 하나가 될 것임을 타입 시스템을 통해 의사 소통합니다.
 
-Here's what an enum definition might look like in the GraphQL schema language:
+GraphQL 스키마 언어에서 열거형 정의가 어떻게 생겼는지 봅시다.
 
 ```graphql
 enum Episode {
@@ -161,13 +164,13 @@ enum Episode {
 }
 ```
 
-This means that wherever we use the type `Episode` in our schema, we expect it to be exactly one of `NEWHOPE`, `EMPIRE`, or `JEDI`.
+즉, 스키마에서 `Episode` 타입을 사용할 때마다 정확히 `NEWHOPE`, `EMPIRE`, `JEDI` 중 하나 일 것으로 예상할 수 있습니다.
 
-Note that GraphQL service implementations in various languages will have their own language-specific way to deal with enums. In languages that support enums as a first-class citizen, the implementation might take advantage of that; in a language like JavaScript with no enum support, these values might be internally mapped to a set of integers. However, these details don't leak out to the client, which can operate entirely in terms of the string names of the enum values.
+다양한 언어로 작성된 GraphQL 서비스 구현은 열거형을 처리 할 수 있는 언어별 고유한 방법을 갖습니다. enum을 일급으로 지원하는 언어에서는 구현시 이를 활용할 수 있습니다. 열거형 지원이 없는 JavaScript와 같은 언어에서 이러한 값은 내부적으로 정수 집합에 매핑 될 수 있습니다. 그러나 이러한 세부 정보는 클라이언트로 보여지지 않으며 열거형 값의 문자열 이름에 관해서만 작동 할 수 있습니다.
 
 ### Lists and Non-Null
 
-Object types, scalars, and enums are the only kinds of types you can define in GraphQL. But when you use the types in other parts of the schema, or in your query variable declarations, you can apply additional _type modifiers_ that affect validation of those values. Let's look at an example:
+객체 타입, 스칼라 및 열거형은 GraphQL에서 정의 할 수 있는 유일한 타입입니다. 하지만 스키마의 다른 부분이나 쿼리 변수 선언에서 타입을 사용하면 해당 값의 유효성 검사에 영향을 주는 추가 *타입 수정자* 를 적용 할 수 있습니다. 예제를 살펴 보겠습니다.
 
 ```graphql
 type Character {
@@ -176,9 +179,9 @@ type Character {
 }
 ```
 
-Here, we're using a `String` type and marking it as _Non-Null_ by adding an exclamation mark, `!` after the type name. This means that our server always expects to return a non-null value for this field, and if it ends up getting a null value that will actually trigger a GraphQL execution error, letting the client know that something has gone wrong.
+여기서 `String` 타입을 사용하고 타입 이름 뒤에 느낌표 `!` 를 추가하여 *Non-Null* 로 표시합니다. 즉, 서버는 항상이 필드에 대해 null이 아닌 값을 반환 할 것으로 예상하고, 실제로 GraphQL 실행 오류를 발생시키는 null 값을 얻으면 클라이언트에게 무언가 잘못되었음을 알립니다.
 
-The Non-Null type modifier can also be used when defining arguments for a field, which will cause the GraphQL server to return a validation error if a null value is passed as that argument, whether in the GraphQL string or in the variables.
+Non-Null 타입 수정자는 필드에 대한 인수를 정의 할 때도 사용할 수 있습니다. 이는 GraphQL 서버가 GraphQL 문자열이나 변수에 상관없이 null 값이 해당 인수로 전달되는 경우 유효성 검사 오류를 반환하게합니다.
 
 ```graphql
 # { "graphiql": true, "variables": { "id": null } }
@@ -189,15 +192,15 @@ query DroidById($id: ID!) {
 }
 ```
 
-Lists work in a similar way: We can use a type modifier to mark a type as a `List`, which indicates that this field will return an array of that type. In the schema language, this is denoted by wrapping the type in square brackets, `[` and `]`. It works the same for arguments, where the validation step will expect an array for that value.
+리스트는 비슷한 방식으로 작동합니다. 타입 수정자를 사용하여 타입을 `List` 로 표시 할 수 있습니다. 이 필드는 해당 타입의 배열을 반환합니다. 스키마 언어에서, 타입을 대괄호 `[]` 로 묶는 것으로 표현됩니다. 유효성 검사 단계에서 해당 값에 대한 배열이 필요한 인수에 대해서도 동일하게 작동합니다.
 
-The Non-Null and List modifiers can be combined. For example, you can have a List of Non-Null Strings:
+Non-Null 및 List 수정자를 결합 할 수도 있습니다. 예를 들면 Null이 아닌 문자열 목록을 가질 수 있습니다.
 
 ```graphql
 myField: [String!]
 ```
 
-This means that the _list itself_ can be null, but it can't have any null members. For example, in JSON:
+즉, *list* 자체는 null 일 수 있지만 null 멤버는 가질 수 없습니다. 예를 들면, JSON에서
 
 ```js
 myField: null // valid
@@ -206,13 +209,13 @@ myField: ['a', 'b'] // valid
 myField: ['a', null, 'b'] // error
 ```
 
-Now, let's say we defined a Non-Null List of Strings:
+Null이 아닌 문자열 목록을 정의했다고 가정해 보겠습니다.
 
 ```graphql
 myField: [String]!
 ```
 
-This means that the list itself cannot be null, but it can contain null values:
+목록 자체는 null 일 수 없지만 null 값을 포함 할 수 있습니다.
 
 ```js
 myField: null // error
@@ -221,13 +224,13 @@ myField: ['a', 'b'] // valid
 myField: ['a', null, 'b'] // valid
 ```
 
-You can arbitrarily nest any number of Non-Null and List modifiers, according to your needs.
+필요에 따라 여러개의 Null 및 List 수정자를 임의로 중첩 할 수 있습니다.
 
 ### Interfaces
 
-Like many type systems, GraphQL supports interfaces. An _Interface_ is an abstract type that includes a certain set of fields that a type must include to implement the interface.
+여러 타입 시스템과 마찬가지로 GraphQL도 인터페이스를 지원합니다. *인터페이스* 는 인터페이스를 구현하기 위해 타입이 포함해야하는 특정 필드 집합을 포함하는 추상 타입입니다.
 
-For example, you could have an interface `Character` that represents any character in the Star Wars trilogy:
+예를 들면, Star Wars 3부작의 모든 문자를 나타내는 `Character` 인터페이스를 가질 수 있습니다.
 
 ```graphql
 interface Character {
@@ -238,9 +241,9 @@ interface Character {
 }
 ```
 
-This means that any type that _implements_ `Character` needs to have these exact fields, with these arguments and return types.
+이것은 `Character` 를 *구현한* 모든 타입은 이러한 인자와 리턴 타입을 가진 정확한 필드를 가져야 한다는 것을 의미합니다.
 
-For example, here are some types that might implement `Character`:
+다음은 `Character` 를 구현한 몇 가지 타입 예제입니다.
 
 ```graphql
 type Human implements Character {
@@ -261,11 +264,11 @@ type Droid implements Character {
 }
 ```
 
-You can see that both of these types have all of the fields from the `Character` interface, but also bring in extra fields, `totalCredits`, `starships` and `primaryFunction`, that are specific to that particular type of character.
+이 두 타입 모두 `Character` 인터페이스의 모든 필드를 가지고 있음을 알 수 있습니다. 또한 특정 타입의 문자에 특정한 추가 필드 `totalCredits`,`starships` 및 `primaryFunction` 을 가질수도 있습니다.
 
-Interfaces are useful when you want to return an object or set of objects, but those might be of several different types.
+인터페이스는 객체 또는 객체집합을 반환하려는 경우에 유용하지만 여러 다른 타입이 있을 수 있습니다.
 
-For example, note that the following query produces an error:
+예를 들면, 다음 쿼리는 오류를 반환합니다.
 
 ```graphql
 # { "graphiql": true, "variables": { "ep": "JEDI" } }
@@ -277,9 +280,9 @@ query HeroForEpisode($ep: Episode!) {
 }
 ```
 
-The `hero` field returns the type `Character`, which means it might be either a `Human` or a `Droid` depending on the `episode` argument. In the query above, you can only ask for fields that exist on the `Character` interface, which doesn't include `primaryFunction`.
+`hero` 필드는 `Character` 타입을 반환하는데, `episode` 인수에 따라 `Human` 또는 `Droid` 중 하나 일 수 있습니다. 위 쿼리는 `primary` 함수를 포함하지 않는 `Character` 인터페이스 상에 존재하는 필드만을 요청할 수 있습니다.
 
-To ask for a field on a specific object type, you need to use an inline fragment:
+특정 객체 타입의 필드를 요청하려면 인라인 프래그먼트을 사용해야합니다.
 
 ```graphql
 # { "graphiql": true, "variables": { "ep": "JEDI" } }
@@ -293,19 +296,19 @@ query HeroForEpisode($ep: Episode!) {
 }
 ```
 
-Learn more about this in the [inline fragments](/learn/queries/#inline-fragments) section in the query guide.
+이에 대한 자세한 내용은 쿼리 가이드의 [인라인 프래그먼트](/learn/queries/#inline-fragments) 장을 참조하세요.
 
 ### Union types
 
-Union types are very similar to interfaces, but they don't get to specify any common fields between the types.
+유니언 타입은 인터페이스와 매우 유사하지만 타입 간에 공통 필드를 지정하지 않습니다.
 
 ```graphql
 union SearchResult = Human | Droid | Starship
 ```
 
-Wherever we return a `SearchResult` type in our schema, we might get a `Human`, a `Droid`, or a `Starship`. Note that members of a union type need to be concrete object types; you can't create a union type out of interfaces or other unions.
+스키마에서 `SearchResult` 타입을 반환 할 때마다, `Human`, `Droid` 또는 `Starship` 을 얻을 수 있습니다. 유니온 타입의 멤버는 구체적인 객체 타입일 필요가 있습니다. 인터페이스 또는 다른 유니온 타입에서 유니온 타입을 작성할 수 없습니다.
 
-In this case, if you query a field that returns the `SearchResult` union type, you need to use a conditional fragment to be able to query any fields at all:
+이 경우, `SearchResult` 유니언 타입을 반환하는 필드를 쿼리하면, 어떤 필드라도 쿼리 할 수 있는 조건부 프래그먼트를 사용해야합니다.
 
 ```graphql
 # { "graphiql": true}
@@ -329,7 +332,7 @@ In this case, if you query a field that returns the `SearchResult` union type, y
 
 ### Input types
 
-So far, we've only talked about passing scalar values, like enums or strings, as arguments into a field. But you can also easily pass complex objects. This is particularly valuable in the case of mutations, where you might want to pass in a whole object to be created. In the GraphQL schema language, input types look exactly the same as regular object types, but with the keyword `input` instead of `type`:
+지금까지는 열거형이나 문자열과 같은 스칼라 값을 인수로 필드에 전달하는 방법에 대해서만 설명했습니다. 하지만 복잡한 객체도 쉽게 전달할 수 있습니다. 이것은 뮤테이션에서 특히 유용합니다. 여기서 뮤테이션은 생성될 전체 객체를 전달하고자 할 수 있습니다. GraphQL 스키마 언어에서 입력 타입은 일반 객체 타입과 정확히 같지만 `type` 대신 `input` 을 사용합니다.
 
 ```graphql
 input ReviewInput {
@@ -338,7 +341,7 @@ input ReviewInput {
 }
 ```
 
-Here is how you could use the input object type in a mutation:
+다음은 뮤테이션에서 입력 객체 타입을 사용하는 방법입니다.
 
 ```graphql
 # { "graphiql": true, "variables": { "ep": "JEDI", "review": { "stars": 5, "commentary": "This is a great movie!" } } }
@@ -350,4 +353,4 @@ mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
 }
 ```
 
-The fields on an input object type can themselves refer to input object types, but you can't mix input and output types in your schema. Input object types also can't have arguments on their fields.
+입력 객체 타입의 입력란은 입력 객체 타입을 참조 할 수 있지만 입력 및 출력 타입을 스키마에 혼합 할 수는 없습니다. 입력 객체 타입도 필드에 인수를 가질 수 없습니다.

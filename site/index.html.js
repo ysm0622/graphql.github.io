@@ -25,7 +25,7 @@ module.exports = ({ page, section }) =>
           </div>
 
           <div className="marketing-col">
-            <h3>Describe your data</h3>
+            <h3>데이터를 표현하세요</h3>
             <Prism language="graphql">
               {`type Project {
   name: String
@@ -36,7 +36,7 @@ module.exports = ({ page, section }) =>
           </div>
 
           <div className="marketing-col">
-            <h3>Ask for what you want</h3>
+            <h3>원하는 것을 요청하세요</h3>
             <Prism language="graphql">
               {`{
   project(name: "GraphQL") {
@@ -47,7 +47,7 @@ module.exports = ({ page, section }) =>
           </div>
 
           <div className="marketing-col">
-            <h3>Get predictable results</h3>
+            <h3>예측가능한 결과를 얻으세요</h3>
             <Prism language="json">
               {`{
   "project": {
@@ -60,10 +60,10 @@ module.exports = ({ page, section }) =>
 
         <div className="buttons-unit">
           <a className="button" href="/code/">
-            Get Started
+            시작하기
           </a>
           <a className="button" href="/learn/">
-            Learn More
+            자세히보기
           </a>
         </div>
 
@@ -71,25 +71,22 @@ module.exports = ({ page, section }) =>
     </div>
 
     <section className="lead">
-      <h1>A query language for your API</h1>
+      <h1>API를 위한 쿼리 언어</h1>
       <p>
-        GraphQL is a query language for APIs and a runtime for fulfilling
-        those queries with your existing data. GraphQL provides a complete
-        and understandable description of the data in your API, gives
-        clients the power to ask for exactly what they need and nothing
-        more, makes it easier to evolve APIs over time, and enables powerful
-        developer&nbsp;tools.</p>
+        GraphQL은 API를 위한 쿼리 언어이며 이미 존재하는 데이터로 쿼리를 수행하기 위한 런타임
+        입니다. GraphQL은 API에 있는 데이터에 대한 완벽하고 이해하기 쉬운 설명을 제공하고
+        클라이언트에게 필요한 것을 정확하게 요청할 수 있는 기능을 제공하며 시간이 지남에 따라
+        API를 쉽게 진화시키고 강력한 개발자 도구를 지원합니다.</p>
     </section>
 
     <section className="point1" id="predictable-results">
       <div className="prose">
-        <h2>Ask for what you need,<br />get exactly that</h2>
+        <h2>필요한 것을 구체적으로 요청하세요</h2>
         {/*[Illustration: just a simple query and response?]*/}
         <p>
-          Send a GraphQL query to your API and get exactly what you need,
-          nothing more and nothing less. GraphQL queries always return
-          predictable results. Apps using GraphQL are fast and stable because
-          they control the data they get, not the&nbsp;server.</p>
+          API에 GraphQL 쿼리를 보내고 필요한 것만 정확히 얻으세요. GraphQL 쿼리는
+          항상 예측 가능한 결과를 반환합니다. GraphQL을 사용하는 앱은 서버가 아닌
+          데이터를 제어하기 때문에 빠르며 안정적입니다.</p>
       </div>
       <div className="window faux-graphiql" aria-hidden>
         <div className="query">
@@ -179,15 +176,13 @@ module.exports = ({ page, section }) =>
     <div className="grayWash">
       <section className="point2" id="single-request">
         <div className="prose">
-          <h2>Get many resources<br />in a single request</h2>
+          <h2>단일 요청으로 많은<br/>데이터를 얻으세요</h2>
           {/*Illustration: a query 2 or 3 levels deep]*/}
           <p>
-            GraphQL queries access not just the properties of one resource
-            but also smoothly follow references between them. While typical
-            REST APIs require loading from multiple URLs, GraphQL APIs get
-            all the data your app needs in a single request. Apps using
-            GraphQL can be quick even on slow mobile
-            network&nbsp;connections.</p>
+            GraphQL 쿼리는 하나의 리소스 속성에 액세스할 뿐만 아니라 이 리소스 간의 참조를
+            자연스럽게 이해합니다. 일반적인 REST API는 여러 URL에서 데이터를 받아와야 하지만
+            GraphQL API는 한번의 요청으로 앱에 필요한 모든 데이터를 가져옵니다. GraphQL을
+            사용하는 앱은 느린 모바일 네트워크 연결에서도 빠르게 수행 할 수 있습니다.</p>
         </div>
         <div className="app-to-server" aria-hidden>
           <img src="/img/phone.svg" width="496" height="440" className="phone" />
@@ -225,15 +220,14 @@ module.exports = ({ page, section }) =>
 
     <section className="point3" id="type-system">
       <div className="prose">
-        <h2>Describe what&rsquo;s possible<br />with a type system</h2>
+        <h2>타입 시스템으로<br/>가능한것을 살펴보세요</h2>
         {/*Illustration of a type IDL following a query by line]*/}
         {/*Under: a server <-> client (Capabilities, Requirements)]?*/}
         <p>
-          GraphQL APIs are organized in terms of types and fields,
-          not endpoints. Access the full capabilities of your data from a
-          single endpoint. GraphQL uses types to ensure Apps only ask for
-          what&rsquo;s possible and provide clear and helpful errors. Apps can
-          use types to avoid writing manual parsing&nbsp;code.</p>
+          GraphQL API는 엔드포인트가 아닌 타입 및 필드로 구성됩니다. 단일 엔드포인트에서
+          데이터의 모든 기능에 엑세스 하세요. GraphQL은 타입시스템을 사용하여 앱이 가능한 것을
+          요청하고 명확하고 유용한 오류를 제공하는 것을 보장합니다. 앱은 타입을 사용하여 수동 파싱
+          코드 작성을 피할 수 있습니다.</p>
       </div>
       <div className="window strong-typed-query" aria-hidden>
       <div className="query">
@@ -306,14 +300,13 @@ type Species {
     <div className="darkWash">
     <section className="point4" id="powerful-tools">
       <div className="prose">
-        <h2>Move faster with<br />powerful developer tools</h2>
+        <h2>강력한 개발자 도구를<br />사용해보세요</h2>
         {/*Illustration of GraphiQL validation error and typeahead, animated?]*/}
         <p>
-          Know exactly what data you can request from your API without
-          leaving your editor, highlight potential issues before sending a
-          query, and take advantage of improved code intelligence. GraphQL
-          makes it easy to build powerful tools like <a href="https://github.com/graphql/graphiql" target="_blank">Graph<em>i</em>QL</a> by
-          leveraging your API&rsquo;s type system.</p>
+          이제 편집기를 벗어나지 않고도 API에서 요청할 수 있는 데이터를 정확히 파악하고
+          쿼리를 보내기 전에 잠재적인 문제를 표시해주며 향상된 코드 인텔리전스를 활용할
+          수 있습니다. GraphQL을 사용하면 API의 타입 시스템을 활용하여 <a href="https://github.com/graphql/graphiql" target="_blank">Graph<em>i</em>QL</a>과
+          같은 강력한 도구를 쉽게 만들 수 있습니다.</p>
       </div>
       <div className="graphiqlVid" dangerouslySetInnerHTML={{__html: `
         <video autoplay loop playsinline>
@@ -326,14 +319,13 @@ type Species {
     <div className="grayWash">
     <section className="point5" id="without-versions">
       <div className="prose">
-        <h2>Evolve your API<br />without versions</h2>
+        <h2>버전 없이 API를<br/> 진화시키세요</h2>
         {/*Illustration showing more legs added to a graph? Or a type evolving over time?]*/}
         <p>
-          Add new fields and types to your GraphQL API without impacting
-          existing queries. Aging fields can be deprecated
-          and hidden from tools. By using a single evolving version,
-          GraphQL APIs give apps continuous access to new features and
-          encourage cleaner, more maintainable server&nbsp;code.</p>
+          기존 쿼리에 영향을 주지 않고 GraphQL API에 새로운 필드와 타입을 추가하세요.
+          오래된 필드는 더이상 사용되지 않도록 도구에서 숨길 수 있습니다.
+          진화하는 단일 버전을 사용함으로써 GraphQL API는 새로운 기능에 대한 지속적인
+          엑세스를 제공하고 보다 꺠끗하고 유지보수가 쉬운 서버 코드를 작성하도록 도와줍니다.</p>
       </div>
       <div className="window type-evolution" aria-hidden>
         <div id="typeEvolveView">
@@ -435,15 +427,13 @@ type Person {
 
     <section className="point6" id="bring-your-own-code">
       <div className="prose">
-        <h2>Bring your own<br />data and code</h2>
+        <h2>기존 데이터와<br/>코드를 사용하세요</h2>
         {/*Illustration of each field becoming a function?]*/}
         <p>
-          GraphQL creates a uniform API across your entire application
-          without being limited by a specific storage engine. Write GraphQL
-          APIs that leverage your existing data and code with GraphQL
-          engines available in many languages. You provide functions for
-          each field in the type system, and GraphQL calls them with
-          optimal&nbsp;concurrency.</p>
+          GraphQL은 특정 스토리지 엔진에 제한받지 않고 전체 애플리케이션에 걸쳐 균일한
+          API를 생성합니다. 다양한 언어로 제공되는 GraphQL 엔진으로 기존 데이터 및 코드를
+          활용하는 GraphQL API를 작성해보세요. 타입 시스템의 각 필드에 대한 함수를 제공하고
+          GraphQL은 이를 최적적, 동시적으로 호출합니다.</p>
       </div>
       <div className="window leverage-code" aria-hidden>
         <div id="leverageCodeView">
@@ -523,11 +513,11 @@ public class Character {
 
     <section className="powered-by" id="whos-using">
       <div className="prose">
-        <h2>Who&rsquo;s using GraphQL?</h2>
+        <h2>GraphQL을 사용하는 기업</h2>
         <p>
-          Facebook's mobile apps have been powered by GraphQL since 2012.
-          A GraphQL spec was open sourced in 2015 and is now available in
-          many environments and used by teams of all sizes.</p>
+          Facebook의 모바일 앱은 2012년부터 GraphQL에 의해 제공되었습니다.
+          GraphQL 명세는 2015년부터 제공되며 현재 다양한 환경에서 사용할 수 있으며
+          모든 규모의 팀에서 사용됩니다.</p>
       </div>
       <div className="logos">
         {/* Waiting for permission from some of the below */}
@@ -562,7 +552,7 @@ public class Character {
       </div>
 
       <a className="button" href="/users/">
-        More GraphQL Users
+        GraphQL을 사용하는 기업들
       </a>
 
     </section>

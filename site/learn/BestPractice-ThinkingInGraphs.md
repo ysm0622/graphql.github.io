@@ -1,5 +1,5 @@
 ---
-title: Thinking in Graphs
+title: 그래프로 생각하기
 layout: ../_core/DocsLayout
 category: Best Practices
 permalink: /learn/thinking-in-graphs/
@@ -7,23 +7,23 @@ next: /learn/serving-over-http/
 ---
 
 ## It's Graphs All the Way Down [\*](https://en.wikipedia.org/wiki/Turtles_all_the_way_down)
-> With GraphQL, you model your business domain as a graph
+> GraphQL을 사용하면 비즈니스 도메인을 그래프로 모델링 할 수 있습니다.
 
-Graphs are powerful tools for modeling many real-world phenomena because they resemble our natural mental models and verbal descriptions of the underlying process. With GraphQL, you model your business domain as a graph by defining a schema; within your schema, you define different types of nodes and how they connect/relate to one another. On the client, this creates a pattern similar to Object-Oriented Programming: types that reference other types. On the server, since GraphQL only defines the interface, you have the freedom to use it with any backend (new or legacy!).
+그래프는 인간의 뇌 구조와 근본적인 프로세스에 대한 언어적 설명과 유사하기 때문에 많은 실제 세계의 현상을 모델링하는 강력한 도구입니다. GraphQL을 사용하면 스키마를 정의하여 비즈니스 도메인을 그래프로 모델링할 수 있습니다. 스키마 내에서 서로 다른 타입의 노드와 노드가 서로 연결/연관되는 방식을 정의합니다. 클라이언트에서는 다른 타입을 참조하는 타입과 같은 객체 지향 프로그래밍과 비슷한 패턴을 만듭니다. 서버에서는 GraphQL이 인터페이스만 정의하므로 모든 백엔드(새로운 또는 기존)에서 자유롭게 사용할 수 있습니다.
 
 ## Shared Language
-> Naming things is a hard but important part of building intuitive APIs
+> 네이밍은 직관적인 API를 작성하는데 있어서 어렵지만 중요한 부분입니다.
 
-Think of your GraphQL schema as an expressive shared language for your team and your users. To build a good schema, examine the everyday language you use to describe your business. For example, let's try to describe an email app in plain english:
+GraphQL 스키마를 팀 및 사용자를 위한 표현적인 공유 언어로 생각해보세요. 훌륭한 스키마를 구축하려면 비즈니스를 설명할 때 사용하는 일상적인 언어를 살펴보세요. 예를 들어 일반적인 영어로 이메일 앱을 설명하고자 한다면,
 
-* A user can have multiple email accounts
-* Each email account has an address, inbox, drafts, deleted items, and sent items
-* Each email has a sender, receive date, subject, and body
-* Users cannot send an email without a recipient address
+* 사용자는 여러 이메일 계정을 가질 수 있습니다.
+* 각 이메일 계정에는 주소, 받은 편지함, 임시 보관함, 삭제된 메일, 보낸 메일이 있습니다.
+* 각 이메일에는 보낸 사람, 수신 날짜, 제목, 본문이 있습니다.
+* 사용자는 수신자 주소없이는 이메일을 보낼 수 없습니다.
 
-Naming things is a hard but important part of building intuitive APIs, so take time to carefully think about what makes sense for your problem domain and users. Your team should develop a shared understanding and consensus of these business domain rules because you will need to choose intuitive, durable names for nodes and relationships in the GraphQL schema. Try to imagine some of the queries you will want to execute:
+네이밍은 직관적인 API를 개발하는데 있어서 어렵지만 중요한 부분이므로 문제가 되는 도메인과 사용자에게 무엇이 합당한지 신중하게 생각해보세요. GraphQL 스키마에서 노드와 관계에 대해 직관적이고 내구성있는 이름을 선택해야하기 때문에 팀은 이러한 비즈니스 도메인 규칙에 대한 이해와 합의를 공유해야합니다. 실행하게 될 쿼리를 상상해보세요.
 
-Fetch the number of unread emails in my inbox for all my accounts
+내 모든 계정에 대해 받은 편지함에 읽지 않은 이메일 수 가져 오기
 ```graphql
 {
   accounts {
@@ -34,7 +34,7 @@ Fetch the number of unread emails in my inbox for all my accounts
 }
 ```
 
-Fetch the "preview info" for the first 20 drafts in the main account
+메인 계정의 상위 20개 메일에 대한 `미리보기` 가져 오기
 ```graphql
 {
   mainAccount {
@@ -51,22 +51,22 @@ fragment previewInfo on Email {
 ```
 
 ## Business Logic Layer
-> Your business logic layer should act as the single source of truth for enforcing business domain rules
+> 비즈니스 로직 계층은 비즈니스 도메인 규칙을 적용하기 위한 진짜 단일 소스로 작동해야합니다.
 
-Where should you define the actual business logic? Where should you perform validation and authorization checks? The answer: inside a dedicated business logic layer. Your business logic layer should act as the single source of truth for enforcing business domain rules.
+실제 비즈니스 로직은 어디에 정의해야합니까? 유효성 검사 및 권한 부여 확인은 어디서 수행해야 할까요? 정답은 전용 비즈니스 로직 계층 내부입니다. 비즈니스 로직 계층은 비즈니스 도메인 규칙을 적용하기위한 단일 소스로 작동해야합니다.
 
 ![Business Logic Layer Diagram](/img/diagrams/business_layer.png)
 
-In the diagram above, all entry points (REST, GraphQL, and RPC) into the system will be processed with the same validation, authorization, and error handling rules.
+위의 다이어그램에서 시스템에 대한 모든 진입점(REST, GraphQL 및 RPC)은 동일한 유효성 검사, 권한 부여 및 오류 처리 규칙으로 처리됩니다.
 
 ### Working with Legacy Data
-> Prefer building a GraphQL schema that describes how clients use the data, rather than mirroring the legacy database schema.
+> 클라이언트가 레거시 데이터베이스 스키마를 미러링하는 것이 아니라 데이터를 사용하는 방법을 설명하는 GraphQL 스키마를 작성하는 것이 좋습니다.
 
-Sometimes, you will find yourself working with legacy data sources that do not perfectly reflect how clients consume the data. In these cases, prefer building a GraphQL schema that describes how clients use the data, rather than mirroring the legacy database schema.
+경우에 따라 클라이언트가 데이터를 사용하는 방식을 완벽하게 반영하지 않는 기존 데이터 소스로 작업하는 경우가 있습니다. 이 경우 레거시 데이터베이스 스키마를 미러링하는 대신 클라이언트가 데이터를 사용하는 방법을 설명하는 GraphQL 스키마를 작성하는 것이 좋습니다.
 
-Build your GraphQL schema to express "what" rather than "how". Then you can improve your implementation details without breaking the interface with older clients.
+`how` 보다는 `what`을 표현하도록 GraphQL 스키마를 작성하세요. 그 다음 과거 클라이언트와의 인터페이스를 유지한채 구현 세부 사항을 향상시킬 수 있습니다.
 
 ## One Step at a time
-> Get validation and feedback more frequently
+> 검증 및 피드백을 보다 자주 받으세요.
 
-Don't try to model your entire business domain in one sitting. Rather, build only the part of the schema that you need for one scenario at a time. By gradually expanding the schema, you will get validation and feedback more frequently to steer you toward building the right solution.
+한 번에 전체 비즈니스 도메인을 모델링하지 마세요. 오히려 한 번에 하나의 시나리오에 필요한 스키마 부분만 만드세요. 점진적으로 스키마를 확장함으로써 올바른 솔루션을 구축하기 위해 검증 및 피드백을 보다 자주 받을 수 있습니다.
