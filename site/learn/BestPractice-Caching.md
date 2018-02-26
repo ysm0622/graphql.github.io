@@ -1,17 +1,17 @@
 ---
-title: Caching
+title: 캐싱
 layout: ../_core/DocsLayout
 category: Best Practices
 permalink: /learn/caching/
 ---
 
-> Providing Object Identifiers allows clients to build rich caches
+> 객체 식별자를 제공하면 클라이언트가 풍부한 캐시를 구축 할 수 있습니다.
 
-In an endpoint-based API, clients can use HTTP caching to easily avoid refetching resources, and for identifying when two resources are the same. The URL in these APIs is a **globally unique identifier** that the client can leverage to build a cache. In GraphQL, though, there's no URL-like primitive that provides this globally unique identifier for a given object. It's hence a best practice for the API to expose such an identifier for clients to use.
+엔드포인트 기반 API에서 클라이언트는 HTTP 캐싱을 사용하여 리소스 재요청을 쉽게 피하고 두 리소스가 동일한 것을 식별할 수 있습니다. 이 API의 URL은 클라이언트가 캐시를 작성하는데 사용할 수있는 **전역 고유 식별자** 입니다. GraphQL에는 주어진 객체에 대해 전역적으로 고유한 식별자를 제공하는 URL과 같은 프리미티브가 없습니다. 그러므로 API가 클라이언트가 사용할 수 있도록 이러한 식별자를 노출하는 것이 가장 좋습니다.
 
 ## Globally Unique IDs
 
-One possible pattern for this is reserving a field, like `id`, to be a globally unique identifier. The example schema used throughout these docs uses this approach:
+가능한 한 가지 패턴은 `id`와 같은 필드를 전역적으로 고유한 식별자로 사용하는 것입니다. 이 문서 전체에 사용된 예제 스키마는 이 방법을 사용합니다.
 
 ```graphql
 # { "graphiql": true }
@@ -31,21 +31,21 @@ One possible pattern for this is reserving a field, like `id`, to be a globally 
 }
 ```
 
-This is a powerful tool to hand to client developers. In the same way that the URLs of a resource-based API provided a globally unique key, the `id` field in this system provides a globally unique key.
+이것은 클라이언트 개발자에게 넘겨줄 강력한 도구입니다. 리소스 기반 API의 URL이 전역적으로 고유한 키를 제공하는 것과 같은 방식으로 이 시스템의 `id` 필드는 전역적으로 고유한 키를 제공합니다.
 
-If the backend uses something like UUIDs for identifiers, then exposing this globally unique ID may be very straightforward! If the backend doesn't have a globally unique ID for every object already, the GraphQL layer might have to construct this. Oftentimes, that's as simple as appending the name of the type to the ID and using that as the identifier; the server might then make that ID opaque by base64-encoding it.
+백엔드가 식별자에 UUID와 같은 것을 사용한다면 이 전역적으로 고유한 ID를 노출하는 것은 매우 간단 할 수 있습니다! 백엔드에 모든 객체에 대한 전역 고유 ID가 없는 경우 GraphQL 계층에서 이를 구성해야 할 수 있습니다. 종종 ID에 타입 이름을 추가하고 이를 식별자로 사용하는 것만큼 간단합니다. 그런 다음 서버는 base64 인코딩을 통해 해당 ID를 불투명하게 만들 수 있습니다.
 
 ## Compatibility with existing APIs
 
-One concern with using the `id` field for this purpose is how a client using the GraphQL API would work with existing APIs. For example, if our existing API accepted a type-specific ID, but our GraphQL API uses globally unique IDs, then using both at once can be tricky.
+이러한 목적을 위해 `id` 필드를 사용하는 것에 대한 한가지 우려는 GraphQL API를 사용하는 클라이언트가 기존 API와 어떻게 작동하는지입니다. 예를 들어 기존 API가 타입별 ID를 허용했지만 GraphQL API가 전역 고유 ID를 사용하는 경우 두 API를 동시에 사용하는 것은 까다로울 수 있습니다.
 
-In these cases, the GraphQL API can expose the previous API's IDs in a separate field. This gives us the best of both worlds:
+이러한 경우 GraphQL API는 이전 API의 ID를 별도의 필드에 표시 할 수 있습니다. 이것은 두 가지 장점을 제공합니다.
 
- - GraphQL clients can continue to rely on a consistent mechanism for getting a globally unique ID.
- - Clients that need to work with our previous API can also fetch `previousApiId` from the object, and use that.
+- GraphQL 클라이언트는 계속적으로 전역 고유 ID를 얻기위한 일관된 메커니즘에 의존 할 수 있습니다.
+- 이전 API로 작업해야하는 클라이언트도 객체에서 `previousApiId` 를 가져와서 사용할 수 있습니다.
 
 ## Alternatives
 
-While globally unique IDs have proven to be a powerful pattern in the past, they are not the only pattern that can be used, nor are they right for every situation. The really critical functionality that the client needs is the ability to derive a globally unique identifier for their caching. While having the server derive that ID simplifies the client, the client can also derive the identifier. Oftentimes, this would be as simple as combining the type of the object (queried with `__typename`) with some type-unique identifier.
+전역적으로 고유한 ID가 과거에는 강력한 패턴으로 입증되었지만 사용할 수 있는 유일한 패턴이 아니며 모든 상황에 적합한 패턴도 아닙니다. 클라이언트가 필요로 하는 정말로 중요한 기능은 캐싱에 대해 전역으로 고유한 식별자를 파생시킬 수 있는 기능입니다. 서버에서 ID를 파생시키면 클라이언트가 단순화되지만 클라이언트는 식별자도 가져야 할수 있습니다. 이것은 (`__typename`으로 질의하는) 객체의 타입을 어떤 타입의 고유 식별자와 결합하는 것처럼 간단합니다.
 
-Additionally, if replacing an existing API with a GraphQL API, it may be confusing if all of the fields in GraphQL are the same **except** `id`, which changed to be globally unique. This would be another reason why one might choose not to use `id` as the globally unique field.
+또한 기존 API를 GraphQL API로 대체하는 경우 GraphQL의 모든 필드가 고유한 것으로 변경된 `id` 를 **제외** 하고 동일한 경우 혼동을 줄 수 있습니다. 이것이 하나의 전역 고유 필드로서 `id` 를 사용하지 않기로 결정한 또 다른 이유입니다.
